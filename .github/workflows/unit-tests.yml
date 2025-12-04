@@ -1,42 +1,42 @@
 name: Unit tests
 
 on:
-    push:
-     branches: [main, develop]
-    pull_request:
-     branches: [main]
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
 
 jobs:
-    unit-tests:
-        runs-on: ubuntu-latest
-        steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-        - name: Setup Node.js
-          uses: actions/setup-node@v4
-          with:
-            node-version: '20.x'
-            cache: 'npm'
-        
-        - name: Install dependencies
-          run: npm ci
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
 
-        - name: Run unit tests with coverage
-          run: npm test --coverage --coverageReporters=text --coverageReporters=Icov
+      - name: Install dependencies
+        run: npm ci
 
-        - name: Upload coverage report
-          uses: codecov/codecov-action@v3
-          with:
-            file: ./coverage/Icov.info
-            fail_ci_if_error: true
+      - name: Run unit tests with coverage
+        run: npm run coverage
 
-        - name: Archive tests results
-          if: always()
-          uses: actions/upload-artifact@v3
-          with:
-            name: test-results
-            path: |
-             coverage/
-             test-results/
-            retention-days: 7
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage/lcov.info
+          fail_ci_if_error: true
+
+      - name: Archive test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            coverage/
+            test-results/
+          retention-days: 7
